@@ -30,16 +30,12 @@ RUN curl -sS -k ${SERVICE_URL}/${SERVICE_VERSION}/${SERVICE_RELEASE}.tgz | gunzi
 RUN apk del curl
 
 # ADD root /
+COPY server.properties $SERVICE_HOME/config
+
 RUN chmod +x ${SERVICE_HOME}/bin/*.sh \
   && chown -R ${SERVICE_USER}:${SERVICE_GROUP} ${SERVICE_HOME}
-  # && chown -R ${SERVICE_USER}:${SERVICE_GROUP} ${SERVICE_HOME} /opt/monit
-
 
 USER $SERVICE_USER
 WORKDIR $SERVICE_HOME
 
-COPY server.properties $SERVICE_HOME/config
-
-EXPOSE 9092
-
-CMD [ "/bin/bash" ]
+CMD [ "bin/kafka-server-start.sh", "config/server.properties" ]
